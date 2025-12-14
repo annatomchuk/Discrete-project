@@ -22,7 +22,7 @@ class Graph:
         else:
             self.adj[u].append(v)
     def to_adj_list(self):
-        #Перетворює матрицю суміжності в список
+        #перетворює матрицю суміжності в список
         if self.adj is not None:
             return
         self.adj=[[] for i in range(self.n)]
@@ -39,9 +39,8 @@ class Graph:
         for u in range(self.n):
             for v in self.adj[u]:
                 self.matrix[u][v]=1
-    #Генерація випадкового DAG
 def generate_random_DAG(n,density,use_matrix=False):
-    #Генеруємо випадковий орієнтований граф з н вершин та щільністю
+    #генеруємо випадковий орієнтований граф з н вершин та щільністю
     g=Graph(n,use_matrix)
     max_edges=n*(n-1)//2
     target_edges=int(max_edges*density)
@@ -104,12 +103,12 @@ def run_experiments():
                 print(f"{mode} n={n:3d} density={d:.2f}  time={avg:.6f} s")
     return results
 def plot_results(results):
-    #Будує графік залежно від часу роботи алгоритму
+    #будує графік залежно від часу роботи алгоритму
     sizes=sorted(set(r[1] for r in results))
     densities=sorted(set(r[2] for r in results))
     colors=["blue","green","red","purple","orange"]
     plt.figure(figsize=(12,6))
-    #Графік для списку суміжності
+    #графік для списку суміжності
     for i,d in enumerate(densities):
             filtered=[r for r in results if r[0]=="list" and r[2]==d]
             times=[r[3] for r in filtered]
@@ -122,7 +121,7 @@ def plot_results(results):
             )
     plt.title("Топологічне сортування DFS - список суміжності")
     plt.xlabel("Кількість вершин n")
-    plt.ylabel("Середній час ()")
+    plt.ylabel("Середній час (секунди)")
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
@@ -141,7 +140,7 @@ def plot_results(results):
             )
     plt.title("Топологічне сортування DFS - матриця суміжності")
     plt.xlabel("Кількість вершин n")
-    plt.ylabel("Середній час ()")
+    plt.ylabel("Середній час (секунди)")
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
@@ -174,12 +173,6 @@ if __name__=="__main__":
     demo.add_edge(2,3)
     demo.add_edge(3,4)
     print("Демонстрація топологічного графу")
-    demo=Graph(5,use_matrix=False)
-    demo.add_edge(0,1)
-    demo.add_edge(0,2)
-    demo.add_edge(1,3)
-    demo.add_edge(2,3)
-    demo.add_edge(3,4)
     print("Список суміжності:")
     for i, neigh in enumerate(demo.adj):
         print(f"{i}:{neigh}")
