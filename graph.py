@@ -2,6 +2,7 @@ import random
 import time
 import statistics
 import matplotlib.pyplot as plt
+import networkx as nx
 class Graph:
     def __init__(self,n,use_matrix=False):
         #use_matrix=False список суміжності
@@ -106,31 +107,72 @@ def plot_results(results):
     #Будує графік залежно від часу роботи алгоритму
     sizes=sorted(set(r[1] for r in results))
     densities=sorted(set(r[2] for r in results))
-    modes=["list","matrix"]
-    plt.figure(figsize=(13,7))
-    marker={"list":"o","matrix":"s"}
-    style={"list":"-","matrix":"--"}
     colors=["blue","green","red","purple","orange"]
+    plt.figure(figsize=(12,6))
+    #Графік для списку суміжності
     for i,d in enumerate(densities):
-        for mode in modes:
-            filtered=[r for r in results if r[0]==mode and r[2]==d]
+            filtered=[r for r in results if r[0]=="list" and r[2]==d]
             times=[r[3] for r in filtered]
             plt.plot(
                 sizes,
                 times,
-                marker=marker[mode],
-                linestyle=style[mode],
+                marker="o",
                 color=colors[i],
-                label=f"{mode},density={d}"
+                label=f"density={d}"
             )
-    plt.title("Час роботи")
-    plt.xlabel("Кількість вершин")
-    plt.ylabel("Середній час")
+    plt.title("Топологічне сортування DFS - список суміжності")
+    plt.xlabel("Кількість вершин n")
+    plt.ylabel("Середній час ()")
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
     plt.show()
+    #Графік для матриці суміжності
+    for i,d in enumerate(densities):
+            filtered=[r for r in results if r[0]=="matrix" and r[2]==d]
+            times=[r[3] for r in filtered]
+            plt.plot(
+                sizes,
+                times,
+                marker="s",
+                linestyle="--",
+                color=colors[i],
+                label=f"density={d}"
+            )
+    plt.title("Топологічне сортування DFS - матриця суміжності")
+    plt.xlabel("Кількість вершин n")
+    plt.ylabel("Середній час ()")
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+def graph(graph:Graph, title="Візуальне представлення графа"):
+    graph.to_adj_list()
+    G=nx.DiGraph()
+    G.add_nodes_from(range(graph.n))
+    for u in range(graph.n):
+        for v in graph.adj[u]:
+            G.add_edge(u,v)
+    pos=nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(6,5))
+    nx.draw(
+        G,pos,
+        with_labels=True,
+        node_color="lightblue",
+        node_size=800,
+        arrowsize=20,
+        font_size=10
+    )
+    plt.title(title)
+    plt.show()
 if __name__=="__main__":
+    print("")
+    demo=Graph(5,use_matrix=False)
+    demo.add_edge(0,1)
+    demo.add_edge(0,2)
+    demo.add_edge(1,3)
+    demo.add_edge(2,3)
+    demo.add_edge(3,4)
     print("Демонстрація топологічного графу")
     demo=Graph(5,use_matrix=False)
     demo.add_edge(0,1)
@@ -148,3 +190,4 @@ if __name__=="__main__":
     print("\nПобудова графіків")
     plot_results(results)
     print("\n Готово")
+    graph(demo,"")
